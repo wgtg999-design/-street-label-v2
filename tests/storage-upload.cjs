@@ -216,5 +216,3 @@ function fixture() {
   });
   console.log(`${count} isolated upload/storage scenarios passed. No remote data was accessed.`);
 })().catch(error => { console.error(error); process.exitCode = 1; });
-
-

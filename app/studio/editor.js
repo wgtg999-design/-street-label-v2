@@ -25,4 +25,3 @@ export default function Editor({initial,products}){
  <div className="save-bar"><span role="status">{message||'현재 저장된 설정입니다.'}</span><button disabled={busy||!dirty} onClick={save}>변경 사항 저장</button></div>
  </main>
 }
-
