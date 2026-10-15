@@ -1,4 +1,6 @@
 import './globals.css';
+import SessionProvider from './session-provider';
+import {authConfigured,getClerkPublishableKey} from '../runtime/auth-config';
 
 export const metadata = {
   title: 'Street Label — Between the Shadows',
@@ -7,5 +9,5 @@ export const metadata = {
 };
 
 export default function RootLayout({ children }) {
-  return <html lang="ko"><body>{children}</body></html>;
+  return <html lang="ko"><body><SessionProvider publishableKey={authConfigured()?getClerkPublishableKey():null}>{children}</SessionProvider></body></html>;
 }
