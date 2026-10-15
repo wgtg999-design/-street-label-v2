@@ -1,0 +1,9 @@
+node_modules/
+.next/
+out/
+.vercel/
+.sites-runtime/
+.env*
+!.env.example
+*.log
+.DS_Store
