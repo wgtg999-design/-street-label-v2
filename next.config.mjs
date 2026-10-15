@@ -2,6 +2,7 @@
 export default {
   poweredByHeader: false,
   reactStrictMode: true,
+  images: {qualities:[75,90],formats:['image/webp']},
   serverExternalPackages: ['@libsql/client'],
   async rewrites(){return [{source:'/assets/:path*',destination:'https://street-label-shop.vercel.app/assets/:path*'}]},
   async headers() {

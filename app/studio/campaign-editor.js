@@ -1,0 +1,10 @@
+'use client';
+import {useEffect,useState} from 'react';
+import {campaignDefinitions,campaignSchema} from '../../lib/campaign-products';
+export default function CampaignEditor(){
+ const [data,setData]=useState(null),[message,setMessage]=useState('상품 설정을 불러오는 중…'),[busy,setBusy]=useState(false);
+ useEffect(()=>{fetch('/api/admin/campaign-products',{cache:'no-store'}).then(async r=>{const d=await r.json();if(!r.ok)throw Error(d.error);setData(d);setMessage('상품명·가격을 저장하면 새로고침 후에도 유지됩니다.')}).catch(e=>setMessage(e.message))},[]);
+ function change(i,key,value){setData(d=>({...d,settings:d.settings.map((p,j)=>i===j?{...p,[key]:value}:p)}))}
+ async function save(){if(!campaignSchema.safeParse(data?.settings).success){setMessage('상품명과 1,000원 이상의 가격을 입력하세요.');return}setBusy(true);try{const r=await fetch('/api/admin/campaign-products',{method:'PUT',headers:{'Content-Type':'application/json'},body:JSON.stringify(data)}),d=await r.json();if(!r.ok)throw Error(d.error);setData(x=>({...x,revision:d.revision}));setMessage('착용 상품을 저장했습니다. 홈페이지에 반영되었습니다.')}catch(e){setMessage(e.message)}finally{setBusy(false)}}
+ return <section className="campaign-admin"><h2>CAMPAIGN PRODUCTS — 모델 착용 상품</h2><p>별도 상품 7종입니다. 기존 쇼핑몰 상품은 변경하지 않습니다. 가격은 유사 상품 조사로 책정했으며, 실제 옵션·입고 재고가 확정되기 전까지 판매 준비 상태입니다.</p>{data?.settings.map((p,i)=><fieldset key={p.id} disabled={busy}><legend>{i+1}. {p.id}</legend><div className="studio-preview"><img src={'/editorial/'+campaignDefinitions.find(x=>x.id===p.id).photo+'.webp'} alt={p.name+' 미리보기'}/></div><label>상품명<input value={p.name} onChange={e=>change(i,'name',e.target.value)}/></label><label>판매가 (원)<input type="number" min="1000" step="1000" value={p.price} onChange={e=>change(i,'price',Number(e.target.value))}/></label><label className="check"><input type="checkbox" checked={p.visible} onChange={e=>change(i,'visible',e.target.checked)}/>노출</label><a href={'/product/'+p.id}>상품 페이지 확인 →</a></fieldset>)}<p role="status">{message}</p><button disabled={!data||busy} onClick={save}>착용 상품 저장</button></section>
+}

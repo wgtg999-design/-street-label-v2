@@ -9,9 +9,9 @@ export async function POST(request){const denied=await guard(request);if(denied)
  const input=Buffer.from(await limitedBody(request,3*1024*1024));
  const metadata=await sharp(input,{limitInputPixels:36000000}).metadata();
  if(!['jpeg','png','webp'].includes(metadata.format)||(metadata.pages||1)>1)throw Error('unsupported');
- let output=await sharp(input,{limitInputPixels:36000000}).rotate().resize({width:2400,height:2400,fit:'inside',withoutEnlargement:true}).webp({quality:88}).toBuffer();
- if(output.length>750000)output=await sharp(input,{limitInputPixels:36000000}).rotate().resize({width:1920,height:1920,fit:'inside',withoutEnlargement:true}).webp({quality:72}).toBuffer();
- if(output.length>750000)return Response.json({error:'이미지가 복잡하거나 너무 큽니다. 작은 이미지로 다시 시도해 주세요.'},{status:413,headers:noCache});
+ const output=await sharp(input,{limitInputPixels:36000000}).rotate().resize({width:3840,height:3840,fit:'inside',withoutEnlargement:true}).webp({quality:92,effort:5}).toBuffer();
+ // Never silently reduce a campaign to 1920px / quality 72 to satisfy storage limits.
+ if(output.length>2000000)return Response.json({error:'고화질 저장 한도 2MB를 넘었습니다. 이미지 크기를 조정한 뒤 다시 업로드해 주세요.'},{status:413,headers:noCache});
  const id=randomUUID(),now=new Date().toISOString();
  await getDatabase().prepare('INSERT INTO store_content(key,data,revision,updated_at) VALUES(?,?,0,?)').bind('v2-image:'+id,JSON.stringify({mime:'image/webp',data:output.toString('base64')}),now).run();
  return Response.json({url:'/v2-media/'+id+'.webp'},{headers:noCache,status:201});
