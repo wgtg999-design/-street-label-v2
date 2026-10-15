@@ -1,0 +1,4 @@
+import { jsx as _jsx, jsxs as _jsxs } from "react/jsx-runtime";
+export default function AuthUnavailable() {
+    return _jsxs("main", { style: { maxWidth: 560, margin: '64px auto', padding: 24 }, children: [_jsx("h1", { style: { fontSize: 24, fontWeight: 500 }, children: "\uB85C\uADF8\uC778 \uC5F0\uACB0 \uC900\uBE44 \uC911" }), _jsx("p", { style: { lineHeight: 1.7 }, children: "\uB85C\uADF8\uC778 \uC5F0\uACB0\uC744 \uD655\uC778\uD558\uC9C0 \uBABB\uD588\uC2B5\uB2C8\uB2E4. \uC5F0\uACB0 \uC124\uC815\uACFC \uB85C\uADF8\uC778 \uC11C\uBE44\uC2A4 \uC0C1\uD0DC\uB97C \uD655\uC778\uD55C \uB4A4 \uB2E4\uC2DC \uC2DC\uB3C4\uD574 \uC8FC\uC138\uC694." }), _jsx("p", { children: _jsx("a", { href: "/setup", children: "\uB300\uD45C\uB2D8 \uC5F0\uACB0 \uD655\uC778 \uD654\uBA74 \uC5F4\uAE30" }) }), _jsx("a", { href: "/", children: "\uD648\uD398\uC774\uC9C0\uB85C \uB3CC\uC544\uAC00\uAE30" })] });
+}

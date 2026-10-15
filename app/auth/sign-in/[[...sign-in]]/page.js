@@ -1,0 +1,24 @@
+import { jsx as _jsx } from "react/jsx-runtime";
+import { redirect } from 'next/navigation';
+import { authConfigured, getChatGPTUser, getClerkAccountState, safeRelativeReturnPath } from '../../../../runtime/auth';
+import { getClerkPublishableKey } from '../../../../runtime/auth-config';
+import AuthUI from '../../ui';
+import AuthUnavailable from '../../unavailable';
+import AccountConnectionPending from '../../connection-pending';
+export const dynamic = 'force-dynamic';
+export default async function SignInPage({ searchParams }) {
+    const next = safeRelativeReturnPath((await searchParams).next ?? '/account');
+    if (!authConfigured())
+        return _jsx(AuthUnavailable, {});
+    const account = await getClerkAccountState();
+    if (account.status === 'verified') {
+        if (next === '/setup' || await getChatGPTUser())
+            redirect(next);
+        return _jsx(AccountConnectionPending, { next: next });
+    }
+    if (account.status === 'unverified')
+        redirect(`/auth/verify-email?next=${encodeURIComponent(next)}`);
+    if (account.status === 'unavailable')
+        return _jsx(AuthUnavailable, {});
+    return _jsx(AuthUI, { mode: "sign-in", next: next, publishableKey: getClerkPublishableKey() });
+}

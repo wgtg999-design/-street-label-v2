@@ -1,8 +1,8 @@
 import './globals.css';
 
 export const metadata = {
-  title: 'Street Label V2 — 준비 중',
-  description: '새 홈페이지 디자인을 준비하고 있습니다.',
+  title: 'Street Label — Between the Shadows',
+  description: '절제된 실루엣과 새로운 시선. Street Label 컬렉션.',
   robots: { index: false, follow: false },
 };
 

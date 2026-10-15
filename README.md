@@ -1,31 +1,36 @@
 # Street Label V2
 
-새 디자인을 받기 전의 독립된 Next.js 배포 기본 프로젝트입니다. 첫 화면에는 **새 홈페이지 준비 중**만 표시합니다. 기존 쇼핑몰과 별도 저장소이며 기존 사이트의 인증·회원·주문 DB·관리자·업로드 저장소는 연결하지 않았습니다.
+기존 두 번째 Next.js 프로젝트를 확장한 모노크롬 스트릿웨어 메인페이지입니다. 기존 쇼핑몰 저장소와 분리되어 있으며, 사용자 승인에 따라 기존 상품·재고·회원·주문 DB를 공유하도록 서버 로직을 JavaScript로 재사용했습니다.
 
-## Vercel에서 공개하기
+- 공개 사이트: https://street-label-v2.vercel.app
+- 홈페이지 관리: `/studio`
+- 공유 상품 관리: `/admin`
+- 공유 주문·재고 관리: `/admin/orders`
+- 연결 설명: [CONNECTIONS.md](CONNECTIONS.md)
+- 재사용 출처: [RUNTIME-PROVENANCE.md](RUNTIME-PROVENANCE.md)
 
-1. https://vercel.com/new 를 엽니다.
-2. **wgtg999-design / -street-label-v2** 저장소의 **Import**를 누릅니다. 기존 이름이 `-`인 저장소를 고르지 않습니다.
-3. **Project Name**: `street-label-v2`
-4. **Framework / Application Preset**: `Next.js` — `vercel.json`으로 자동 설정합니다.
-5. **Root Directory**: `./` — 하위 폴더를 선택하지 않습니다.
-6. **Build and Output Settings**: 기본값 유지. Output Directory는 직접 입력하지 않습니다.
-7. **Environment Variables**: 현재는 필요 없습니다. 기존 쇼핑몰의 비밀값을 복사하지 않습니다.
-8. **Deploy**를 누르고 **Ready**가 되면 **Visit**를 누릅니다.
+## 개발 및 검증
 
-이 저장소에는 Next.js 앱 하나만 있으므로 기존 저장소의 `deploy/vercel` 선택이나 다중 Services 가져오기를 사용하지 않습니다. `street-label-v2`라는 Vercel 프로젝트가 이미 있다면 먼저 그 프로젝트의 Git 연결 저장소를 확인하여 중복 생성을 피합니다.
+Node.js 22.13 이상 (검증 24.19), pnpm 11.25.
 
-실제 배포 주소는 Vercel이 생성한 뒤 표시합니다. 이름이 겹치면 다른 주소가 붙을 수 있으므로 배포 전 주소를 확정하지 않습니다.
+```sh
+pnpm install --frozen-lockfile
+pnpm dev
+pnpm test
+pnpm run build
+pnpm start --port 3902
+```
 
-## 개발
+화면: `app/storefront.js`, `app/globals.css`. 서버 데이터: `lib/home-store.js`. 배너·진열 스키마: `lib/home-config.js`. 관리자: `app/studio`, `app/api/admin/home`. 공통 제목: `app/layout.js`.
 
-- Node.js 22.13 이상
-- pnpm 11.25.0
-- `pnpm install --frozen-lockfile`
-- `pnpm dev` — 기본 포트 3000
-- `pnpm run build`
-- `pnpm start --port 3902` — 프로덕션 빌드 실행
+`.next/`, `node_modules/`, `.env*` 실제 비밀값은 원본으로 수정하거나 커밋하지 않습니다. 기존 DB를 초기화하는 API는 포함하지 않습니다. Vercel은 루트 `./`, Next.js, `pnpm install --frozen-lockfile`, `pnpm run build`를 사용합니다.
 
-화면은 `app/page.js`, 공통 스타일은 `app/globals.css`, 문서 기본 설정은 `app/layout.js`를 수정합니다. `.next/`는 빌드 결과입니다.
+## 구현
 
-디자인은 대표님이 별도로 지정한 뒤 구현합니다. 회원가입·주문·결제·관리자 기능이 준비된 사이트로 표시하지 않습니다.
+투명·스크롤 대비 헤더, 최대 6개 PC/모바일 배너·자동 전환/화살표/스와이프/정지, 최대 10개 3열 단일 상품 캐러셀, 모바일 터치 UI, 서버 재고 조회 후 옵션별 장바구니 담기, 검색, 카테고리 필터, 컬렉션 저널, 접근 가능한 모달과 키보드 조작. 관리자 설정은 공유 DB의 별도 키에 저장하고 충돌을 방지합니다. 업로드는 기존 관리자 인증과 R2 검증 로직을 사용합니다.
+
+## 운영 상태와 한계
+
+초기 배너는 첨부 원본에서 추출한 캠페인 1장입니다. 6장을 임의 복제하지 않았습니다. 브랜드·상품명·가격은 공유 카탈로그 설정을 따릅니다. 기존 브랜드 설정이 `YOUR LABEL`이면 그대로 표시하며 `BLANK`는 사용하지 않습니다.
+
+기존 사이트는 현재 테스트 상품이며 주문 접수가 중지되어 있습니다. V2의 실제 관리자 저장·업로드·회원·주문 연동 검증에는 Clerk/R2 환경 설정이 필요합니다. 연결되지 않은 상태를 성공으로 표시하지 않습니다. 연결 및 사진 원본의 제약은 CONNECTIONS.md를 확인하세요. 검색엔진 `noindex`는 정식 공개 검토 전까지 유지합니다.
